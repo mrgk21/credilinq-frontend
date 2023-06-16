@@ -1,0 +1,6 @@
+.yarn
+.next
+dist
+public
+node_modules
+src/styles
