@@ -52,7 +52,7 @@ const InputField = ({
 					{label}
 				</label>
 			</div>
-			<span className="p-1 pl-4 text-sm text-red-500">{error}</span>
+			{error && <span className="p-1 pl-4 text-sm text-red-500">{error}</span>}
 		</div>
 	);
 };
