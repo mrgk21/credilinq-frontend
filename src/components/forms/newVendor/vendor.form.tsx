@@ -77,7 +77,7 @@ const NewVendorForm = () => {
 	return (
 		<form
 			onSubmit={(e: React.FormEvent<RegisterForm>) => handleSubmit(e)}
-			className="space-y-6 p-10"
+			className="mx-auto max-w-[1150px] space-y-6 bg-white px-5 py-10 shadow-xl"
 		>
 			<FormSubHeader text="Company Information" />
 			<section className="grid grid-cols-2 gap-14">
