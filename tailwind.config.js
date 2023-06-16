@@ -7,6 +7,9 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				dejavu: ["dejavu"],
+			},
 			colors: {
 				purple: "#601179",
 				text_gray: "#666666",

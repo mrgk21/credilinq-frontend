@@ -25,3 +25,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+@font-face {
+  font-family: 'dejavu';
+  src: url('/fonts/dejavu-sans.book.ttf');
+}
