@@ -166,41 +166,41 @@ const NewVendorForm = () => {
 					/>
 					<div className="space-y-3">
 						<section className="flex space-x-3 text-text_gray">
-							<GoCheck size={25} className="w-[25px]" />
-							<p className="leading-7">
-								<span>
+							<GoCheck size={25} className="min-w-[25px]" />
+							<span className="space-y-1 leading-7">
+								<div>
 									PDFs (not scanned copies) of company&apos;s operating bank
 									current account(s) statements for the past 6 months.
-								</span>
-								<span>
+								</div>
+								<div>
 									Example: If today is 16 Jun 23, then please upload bank
 									statements from Dec 22 to May 23 (both months inclusive)
-								</span>
-							</p>
+								</div>
+							</span>
 						</section>
 						<section className="flex space-x-3 text-text_gray">
-							<GoCheck size={25} className="w-[25px]" />
-							<p className="leading-7">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<div className="leading-7">
 								If your company is multi-banked, then please upload 6 months bank
 								statements for each bank account
-							</p>
+							</div>
 						</section>
 						<section className="flex space-x-3 text-text_gray">
-							<GoCheck size={25} className="w-[25px]" />
-							<p className="leading-7">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<div className="leading-7">
 								If your file is password protected, we request you to remove the
 								password and upload the file to avoid submission failure
-							</p>
+							</div>
 						</section>
 						<section className="flex space-x-3 text-text_gray">
-							<GoCheck size={25} className="w-[25px]" />
-							<p className="leading-7">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<div className="leading-7">
 								In case if you are facing any issue while uploading bank statements,
 								Please contact us on{" "}
 								<a href="mailto:support@credilinq.ai" className="text-purple">
 									support@credilinq.ai
 								</a>
-							</p>
+							</div>
 						</section>
 					</div>
 				</section>
@@ -225,41 +225,43 @@ const NewVendorForm = () => {
 							{errors.tnc && <p className="text-xs text-red-500">{errors.tnc}</p>}
 						</div>
 					</div>
-					<section className="flex items-center space-x-3 text-text_gray">
-						<GoCheck size={25} className="w-[25px]" />
-						<p className="leading-7">
-							I confirm that I am the authorized person to upload bank statements on
-							behalf of my company
-						</p>
-					</section>
-					<section className="flex space-x-3 text-text_gray">
-						<GoCheck size={25} className="w-[25px]" />
-						<p className="leading-7">
-							I assure you that uploaded bank statements and provided company
-							information match and are of the same company, if there is a mismatch
-							then my report will not be generated
-						</p>
-					</section>
-					<section className="flex space-x-3 text-text_gray">
-						<GoCheck size={25} className="w-[25px]" />
-						<p className="leading-7">
-							I understand that this is a general report based on the bank statements
-							and Credilinq is not providing a solution or guiding me for my business
-							growth
-						</p>
-					</section>
-					<section className="flex space-x-3 text-text_gray">
-						<GoCheck size={25} className="w-[25px]" />
-						<p className="leading-7">
-							I have read and understand the{" "}
-							<a
-								href="https://smehealthcheck.credilinq.ai/terms-and-conditions"
-								className="text-purple"
-							>
-								Terms & Conditions
-							</a>
-						</p>
-					</section>
+					<ul className="space-y-3 pl-6">
+						<li className="flex items-center space-x-6 text-text_gray">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<p className="leading-7">
+								I confirm that I am the authorized person to upload bank statements
+								on behalf of my company
+							</p>
+						</li>
+						<li className="flex space-x-6 text-text_gray">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<p className="leading-7">
+								I assure you that uploaded bank statements and provided company
+								information match and are of the same company, if there is a
+								mismatch then my report will not be generated
+							</p>
+						</li>
+						<li className="flex space-x-6 text-text_gray">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<p className="leading-7">
+								I understand that this is a general report based on the bank
+								statements and Credilinq is not providing a solution or guiding me
+								for my business growth
+							</p>
+						</li>
+						<li className="flex space-x-6 text-text_gray">
+							<GoCheck size={25} className="min-w-[25px]" />
+							<p className="leading-7">
+								I have read and understand the{" "}
+								<a
+									href="https://smehealthcheck.credilinq.ai/terms-and-conditions"
+									className="text-purple"
+								>
+									Terms & Conditions
+								</a>
+							</p>
+						</li>
+					</ul>
 				</section>
 				<Button type="submit" text="submit" className="!ml-auto" />
 			</form>
