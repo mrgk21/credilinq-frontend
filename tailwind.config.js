@@ -12,6 +12,7 @@ module.exports = {
 			},
 			colors: {
 				purple: "#601179",
+				pink: "#d4027d",
 				text_gray: "#666666",
 			},
 		},
