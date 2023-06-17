@@ -1,7 +1,10 @@
 import { useMutation } from "@apollo/client";
 import Button from "@src/components/common/button";
+import { extensions } from "@src/constants";
 import { CREATE_VENDOR } from "@src/gql/createVendor.mutation";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 import * as yup from "yup";
 import { ValidationError } from "yup";
 import VendorForm1 from "./subForms/vendor.form1";
@@ -33,9 +36,15 @@ export enum Progress {
 	SUBMITTED,
 }
 
+const axiosClient = axios.create({
+	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL_DEV,
+});
+
 const NewVendorForm = () => {
 	const [formProgress, setFormProgress] = useState<Progress>(Progress.STARTED);
 	const [tncCheck, setTncCheck] = useState<boolean>(false);
+	const [extension, setExtension] = useState(0);
+	const formRef = useRef<HTMLFormElement>(null);
 
 	const [data, setData] = useState<{ [k: string]: string | null }>({});
 	const [errors, setErrors] = useState<{ [k: string]: any }>({});
@@ -87,19 +96,43 @@ const NewVendorForm = () => {
 				},
 				{ abortEarly: false },
 			);
-			const resp = await createVendor({
+			toast.loading("submitting form", { id: "form-loader" });
+			await createVendor({
 				variables: {
 					...result,
+					appl_mobile: extensions[extension].code + "-" + result.appl_mobile,
 				},
 			});
-			console.log({ resp });
-		} catch (error: unknown) {
+			toast.dismiss("form-loader");
+			toast.success("Form submitted!", { duration: 5000 });
+
+			const formData = new FormData();
+			docs.forEach((doc, index) => {
+				formData.append(`doc-${index + 1}`, doc);
+			});
+			formData.append("email", result.appl_email);
+
+			toast.loading("uploading files", { id: "form-loader" });
+			await axiosClient.post("/vendor/upload", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
+			toast.dismiss("form-loader");
+			toast.success("Files uploaded!", { duration: 5000 });
+
+			// reset form state
+			setDocs([]);
+			setData({});
+			setTncCheck(false);
+			formRef.current?.reset();
+		} catch (error: any) {
+			toast.dismiss("form-loader");
 			const errs: typeof errors = {};
 
 			if (error instanceof ValidationError)
 				error.inner.forEach((item) => {
 					errs[item.path as string] = item.message;
 				});
+			else toast.error(error.message);
 			setErrors(errs);
 		}
 	};
@@ -156,11 +189,18 @@ const NewVendorForm = () => {
 
 	return (
 		<form
+			ref={formRef}
 			onSubmit={(e: React.FormEvent<RegisterForm>) => handleSubmit(e)}
 			className="mx-auto flex max-w-[1150px] flex-col space-y-4 bg-white px-10 py-14 shadow-xl"
 		>
 			<VendorForm1 errors={errors} formProgress={formProgress} onChange={handleChange} />
-			<VendorForm2 errors={errors} formProgress={formProgress} onChange={handleChange} />
+			<VendorForm2
+				errors={errors}
+				formProgress={formProgress}
+				onChange={handleChange}
+				extension={extension}
+				setExtension={setExtension}
+			/>
 			<VendorForm3
 				errors={errors}
 				formProgress={formProgress}

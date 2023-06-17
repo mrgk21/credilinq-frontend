@@ -1,14 +1,17 @@
 import InputField from "@src/components/common/inputField";
+import InputFieldDropdown from "@src/components/common/inputField.dropdown";
 import FormSubHeader from "../../form.subHeader";
 import { Progress } from "../vendor.form";
 
 interface Props {
 	formProgress: Progress;
 	errors: { [k: string]: string | null };
+	extension: number;
+	setExtension: (ind: number) => void;
 	onChange: (_event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
+const VendorForm2 = ({ errors, formProgress, onChange, extension, setExtension }: Props) => {
 	const isCompleted = formProgress > Progress.COMPLETED_COMP;
 	const isCurrent = formProgress === Progress.COMPLETED_COMP;
 	return (
@@ -53,7 +56,6 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 						The report will be delivered on this email address
 					</small>
 				</div>
-				{/* disable paste on email2 */}
 				<InputField
 					error={errors.appl_email2 ?? null}
 					label="Re-enter email address"
@@ -62,12 +64,14 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 					onChange={onChange}
 					disabled={!isCompleted && !isCurrent}
 				/>
-				<InputField
+				<InputFieldDropdown
 					error={errors.appl_mobile ?? null}
 					label="Mobile Number"
 					name="appl_mobile"
 					placeholder="Enter your mobile number"
 					onChange={onChange}
+					extension={extension}
+					setExtension={setExtension}
 					disabled={!isCompleted && !isCurrent}
 				/>
 			</section>

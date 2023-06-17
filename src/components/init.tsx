@@ -8,9 +8,9 @@ interface Props {
 
 const Init = ({ children }: Props) => {
 	return (
-		<main className="font-dejavu">
+		<div className="font-dejavu">
 			<ApolloProvider client={apolloClient}>{children}</ApolloProvider>
-		</main>
+		</div>
 	);
 };
 

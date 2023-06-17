@@ -31,7 +31,7 @@ const VendorForm4 = ({ formProgress, errors, tncCheck, setTncCheck }: Props) => 
 				<div className="flex items-center space-x-3 text-text_gray">
 					{!tncCheck && (
 						<MdOutlineCheckBoxOutlineBlank
-							className="text-2xl hover:cursor-pointer"
+							className={`text-2xl ${!isPending ? "hover:cursor-pointer" : ""}`}
 							onClick={() => (!isPending ? setTncCheck(true) : "")}
 						/>
 					)}
