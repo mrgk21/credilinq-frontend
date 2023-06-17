@@ -25,7 +25,7 @@ const Dropzone = ({
 	onDrop,
 	maxFiles = 1,
 	className = "",
-	error = null,
+	error,
 	disabled,
 }: DropzoneProps) => {
 	const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
@@ -35,22 +35,25 @@ const Dropzone = ({
 	});
 
 	return (
-		<div className="flex flex-col focus:bg-none">
-			<div
-				className={`flex min-w-full flex-col items-center justify-center gap-[12px] rounded-lg border-[1px] border-dashed border-[#3F3F3F] bg-[#ffffff25] p-4 hover:cursor-pointer focus:border-indigo-500 
+		<div>
+			<div className="flex flex-col focus:bg-none">
+				<div
+					className={`flex min-w-full flex-col items-center justify-center gap-[12px] rounded-lg border-[1px] border-dashed border-[#3F3F3F] bg-[#ffffff25] p-4 hover:cursor-pointer focus:border-indigo-500 
 					${disabled ? "pointer-events-none" : ""}
 					${className}`}
-				{...getRootProps({ isDragAccept, isDragReject })}
-			>
-				<input {...getInputProps()} className="focus:bg-none" />
-				<div className="rounded-full bg-gray-200 p-3 ">
-					<FaFileUpload className=" text-2xl text-black" />
+					{...getRootProps({ isDragAccept, isDragReject })}
+				>
+					<input {...getInputProps()} className="focus:bg-none" />
+					<div className="rounded-full bg-gray-200 p-3 ">
+						<FaFileUpload className=" text-2xl text-black" />
+					</div>
+					<span className="text-black dark:text-black">
+						<span className=" underline">Click to upload</span> or drag and drop Bank
+						Statements
+					</span>
 				</div>
-				<span className="text-black dark:text-black">
-					<span className=" underline">Click to upload</span> or drag and drop Bank
-					Statements
-				</span>
 			</div>
+			{error && <div className="text-sm text-red-500">{error}</div>}
 		</div>
 	);
 };

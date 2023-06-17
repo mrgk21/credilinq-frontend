@@ -9,13 +9,15 @@ interface Props {
 }
 
 const VendorForm1 = ({ formProgress, errors, onChange }: Props) => {
+	const isCompleted = formProgress > Progress.STARTED;
+	const isCurrent = formProgress === Progress.STARTED;
 	return (
 		<>
 			<FormSubHeader
 				text="Company Information"
-				isCompleted={false}
 				index={Progress.STARTED}
-				currIndex={formProgress}
+				isCompleted={isCompleted}
+				isCurrent={isCurrent}
 			/>
 			<section className="ml-3 grid grid-cols-2 gap-x-14 gap-y-6 border-l-[1px] border-text_gray pb-6 pl-7">
 				<InputField
@@ -24,6 +26,7 @@ const VendorForm1 = ({ formProgress, errors, onChange }: Props) => {
 					name="comp_uen"
 					placeholder="Enter your company UEN"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 				<InputField
 					error={errors.comp_name ?? null}
@@ -31,6 +34,7 @@ const VendorForm1 = ({ formProgress, errors, onChange }: Props) => {
 					name="comp_name"
 					placeholder="Enter your company name"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 			</section>
 		</>

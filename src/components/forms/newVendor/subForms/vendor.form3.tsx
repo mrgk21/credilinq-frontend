@@ -1,36 +1,77 @@
 import { Dropzone } from "@src/components/common/dropzone";
+import { useCallback } from "react";
 import { GoCheck } from "react-icons/go";
+import { IoCloseCircle } from "react-icons/io5";
 import FormSubHeader from "../../form.subHeader";
 import { Progress } from "../vendor.form";
 
 interface Props {
 	formProgress: Progress;
 	errors: { [k: string]: string | null };
-	onIconUpload: (_acceptedFiles: File[]) => Promise<void>;
+	docs: File[] | [];
+	docUpload: (_acceptedFile: File) => void;
+	docRemove: (_index: number) => void;
 }
 
-const VendorForm3 = ({ errors, formProgress, onIconUpload }: Props) => {
+const VendorForm3 = ({ errors, formProgress, docs, docUpload, docRemove }: Props) => {
+	const isCompleted = formProgress > Progress.COMPLETED_APPL;
+	const isCurrent = formProgress === Progress.COMPLETED_APPL;
+	const maxDocLimit = docs.length === 6;
+
+	const handleDocUpload = useCallback(async (docFiles: File[]) => {
+		docUpload(docFiles[0]);
+	}, []);
+
 	return (
 		<>
 			<FormSubHeader
 				text="Upload Documents"
-				isCompleted={false}
 				index={Progress.COMPLETED_APPL}
-				currIndex={formProgress}
+				isCompleted={isCompleted}
+				isCurrent={isCurrent}
 			/>
 			<section
 				className={`ml-3 grid grid-cols-2 gap-x-14 gap-y-6 border-l-[1px] border-text_gray pb-6 pl-7 ${
-					formProgress < Progress.COMPLETED_APPL ? "opacity-70" : ""
+					!isCompleted && !isCurrent ? "opacity-70" : ""
 				}`}
 			>
-				<Dropzone
-					label="Upload an image:"
-					name="image"
-					fileTypes={{ "x-pdf/*": [] }}
-					error={errors.image ?? null}
-					onDrop={onIconUpload}
-					disabled={false}
-				/>
+				<div className=" flex flex-col ">
+					<Dropzone
+						label="Upload documents"
+						name="doc"
+						maxFiles={1}
+						fileTypes={{ "application/pdf": [] }}
+						error={errors.doc ?? null}
+						onDrop={handleDocUpload}
+						disabled={(!isCompleted && !isCurrent) || maxDocLimit}
+					/>
+					{maxDocLimit && (
+						<small className="text-sm text-yellow-500">
+							Max document upload limit reached
+						</small>
+					)}
+					<ul className="flex w-full flex-grow flex-col justify-end space-y-2 text-lg text-black">
+						{docs.map((doc, index) => (
+							<li className="flex items-center justify-between rounded-full border border-text_gray px-5 py-2 text-center">
+								<span>{index + 1}</span>
+								<span className="w-1/2 truncate">{doc.name}</span>
+								{(isCompleted || isCurrent) && (
+									<IoCloseCircle
+										size={30}
+										className="min-w-[30px] text-red-500 hover:cursor-pointer"
+										onClick={() => docRemove(index)}
+									/>
+								)}
+								{!isCompleted && !isCurrent && (
+									<IoCloseCircle
+										size={30}
+										className="min-w-[30px] text-gray-500 "
+									/>
+								)}
+							</li>
+						))}
+					</ul>
+				</div>
 				<div className="space-y-3">
 					<section className="flex space-x-3 text-text_gray">
 						<GoCheck size={25} className="min-w-[25px]" />

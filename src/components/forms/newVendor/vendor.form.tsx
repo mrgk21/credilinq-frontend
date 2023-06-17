@@ -1,5 +1,6 @@
 import Button from "@src/components/common/button";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
+import * as yup from "yup";
 import { ValidationError } from "yup";
 import VendorForm1 from "./subForms/vendor.form1";
 import VendorForm2 from "./subForms/vendor.form2";
@@ -33,22 +34,42 @@ export enum Progress {
 const NewVendorForm = () => {
 	const [formProgress, setFormProgress] = useState<Progress>(Progress.STARTED);
 	const [tncCheck, setTncCheck] = useState<boolean>(false);
-	const [errors, setErrors] = useState<{ [k: string]: string | null }>({});
-	const [doc, setDoc] = useState<File | null>(null);
 
-	const handleIconUpload = useCallback(async (iconFiles: File[]) => {
-		setDoc(iconFiles[0]);
+	const [data, setData] = useState<{ [k: string]: string | null }>({});
+	const [errors, setErrors] = useState<{ [k: string]: any }>({});
+	const [docs, setDocs] = useState<File[]>([]);
 
-		const err = { ...errors };
-		err.icon = null;
-		setErrors(err);
-	}, []);
+	useEffect(() => {
+		let progress: Progress = Progress.STARTED;
 
-	console.log({ errors });
+		// calculate form progress
+		if (data.comp_uen && data.comp_name) {
+			progress = Progress.COMPLETED_COMP;
+			if (
+				data.appl_name &&
+				data.appl_pos &&
+				data.appl_email1 &&
+				data.appl_email2 &&
+				data.appl_mobile
+			) {
+				progress = Progress.COMPLETED_APPL;
+				if (docs.length > 0) {
+					progress = Progress.COMPLETED_DOCS;
+					if (tncCheck) {
+						progress = Progress.COMPLETED_TNC;
+					}
+				}
+			}
+		}
+
+		setFormProgress(progress);
+	}, [data, docs, tncCheck]);
+
+	console.log({ formProgress, data });
 
 	const handleSubmit = async (e: React.FormEvent<RegisterForm>) => {
 		e.preventDefault();
-		const { comp_name, comp_uen, appl_email1, appl_email2, appl_mobile, appl_name, appl_pos } =
+		const { comp_name, comp_uen, appl_email1, appl_mobile, appl_name, appl_pos } =
 			e.currentTarget.elements;
 
 		console.log({ elements: e.currentTarget.elements });
@@ -61,7 +82,6 @@ const NewVendorForm = () => {
 					appl_name: appl_name.value,
 					appl_pos: appl_pos.value,
 					appl_email1: appl_email1.value,
-					appl_email2: appl_email2.value,
 					appl_mobile: appl_mobile.value,
 					tnc: tncCheck,
 				},
@@ -80,11 +100,57 @@ const NewVendorForm = () => {
 		}
 	};
 
-	const handleChange = async (e: React.ChangeEvent<HTMLElement & { name: string }>) => {
-		const err = { ...errors };
-		err[e.target.name] = null;
-		setErrors(err);
+	const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		try {
+			if (e.target.name === "appl_email2") {
+				if (e.target.value === data.appl_email1) {
+					setErrors({ ...errors, ...{ [e.target.name]: null } });
+					setData({ ...data, ...{ [e.target.name]: e.target.value } });
+					return;
+				}
+				throw new ValidationError("Emails must be equal");
+			}
+			const result = await yup
+				.reach(vendorSchema, `${[e.target.name]}`)
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				//@ts-ignore
+				.validate(e.target.value);
+
+			setErrors({ ...errors, ...{ [e.target.name]: null } });
+			setData({ ...data, ...{ [e.target.name]: result } });
+		} catch (error) {
+			if (error instanceof ValidationError) {
+				setErrors({ ...errors, ...{ [e.target.name]: error.message } });
+				setData({ ...data, ...{ [e.target.name]: null } });
+			}
+		}
 	};
+
+	const handleDocUpload = (file: File) => {
+		if (file.size / 1000 > 2000) {
+			// files greater than 2mb
+			setErrors({ ...errors, ...{ doc: "File size cannot exceed 2mb" } });
+			return;
+		}
+		setErrors({ ...errors, ...{ doc: null } });
+		const _docs = [...docs];
+		_docs.push(file);
+		setDocs((state) => {
+			const _docs = [...state];
+			_docs.push(file);
+			return _docs;
+		});
+		console.log("new file", _docs);
+	};
+
+	const handleDocRemove = (ind: number) => {
+		setDocs((state) => {
+			const _docs = [...state];
+			_docs.splice(ind, 1);
+			return _docs;
+		});
+	};
+	console.log({ docs });
 
 	return (
 		<form
@@ -96,7 +162,9 @@ const NewVendorForm = () => {
 			<VendorForm3
 				errors={errors}
 				formProgress={formProgress}
-				onIconUpload={handleIconUpload}
+				docUpload={handleDocUpload}
+				docRemove={handleDocRemove}
+				docs={docs}
 			/>
 			<VendorForm4
 				errors={errors}
@@ -104,7 +172,14 @@ const NewVendorForm = () => {
 				setTncCheck={setTncCheck}
 				tncCheck={tncCheck}
 			/>
-			<Button type="submit" text="submit" className="!ml-auto" />
+			<Button
+				type="submit"
+				text="submit"
+				className={`${
+					formProgress === Progress.COMPLETED_TNC ? "" : "opacity-70"
+				} !ml-auto`}
+				disabled={formProgress < Progress.COMPLETED_TNC}
+			/>
 		</form>
 	);
 };

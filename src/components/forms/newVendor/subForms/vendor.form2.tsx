@@ -9,13 +9,15 @@ interface Props {
 }
 
 const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
+	const isCompleted = formProgress > Progress.COMPLETED_COMP;
+	const isCurrent = formProgress === Progress.COMPLETED_COMP;
 	return (
 		<>
 			<FormSubHeader
 				text="Applicant Information"
-				isCompleted={false}
 				index={Progress.COMPLETED_COMP}
-				currIndex={formProgress}
+				isCompleted={isCompleted}
+				isCurrent={isCurrent}
 			/>
 			<section
 				className={`ml-3 grid grid-cols-2 gap-x-14 gap-y-6 border-l-[1px] border-text_gray pb-6 pl-7 ${
@@ -28,6 +30,7 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 					name="appl_name"
 					placeholder="Enter your Full Name"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 				<InputField
 					error={errors.appl_pos ?? null}
@@ -35,6 +38,7 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 					name="appl_pos"
 					placeholder="Enter your position"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 				<div>
 					<InputField
@@ -43,6 +47,7 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 						name="appl_email1"
 						placeholder="Enter your email address"
 						onChange={onChange}
+						disabled={!isCompleted && !isCurrent}
 					/>
 					<small className="text-xs text-purple">
 						The report will be delivered on this email address
@@ -55,13 +60,15 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 					name="appl_email2"
 					placeholder="Enter your email address again"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 				<InputField
 					error={errors.appl_mobile ?? null}
-					label="Company Name"
+					label="Mobile Number"
 					name="appl_mobile"
-					placeholder="Enter your company name"
+					placeholder="Enter your mobile number"
 					onChange={onChange}
+					disabled={!isCompleted && !isCurrent}
 				/>
 			</section>
 		</>

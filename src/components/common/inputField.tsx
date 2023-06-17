@@ -40,6 +40,7 @@ const InputField = ({
 							: "border-gray-500 dark:border-gray-500"
 					} border-1 peer block w-full appearance-none rounded-md border bg-transparent px-2.5 py-4 text-base text-gray-900 focus:border-2 focus:outline-none focus:ring-0 dark:text-black`}
 					placeholder={showPlaceholder ? placeholder : " "}
+					{...inputProps}
 				/>
 				<label
 					htmlFor={`floating-${name}`}

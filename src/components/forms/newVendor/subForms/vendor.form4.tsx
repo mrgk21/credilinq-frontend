@@ -11,30 +11,34 @@ interface Props {
 }
 
 const VendorForm4 = ({ formProgress, errors, tncCheck, setTncCheck }: Props) => {
+	const isCompleted = formProgress > Progress.COMPLETED_DOCS;
+	const isCurrent = formProgress === Progress.COMPLETED_DOCS;
+	const isPending = formProgress < Progress.COMPLETED_DOCS;
+
 	return (
 		<>
 			<FormSubHeader
 				text="Terms & Conditions"
-				isCompleted={false}
 				index={Progress.COMPLETED_DOCS}
-				currIndex={formProgress}
+				isCompleted={isCompleted}
+				isCurrent={isCurrent}
 			/>
 			<section
 				className={`ml-3 space-y-3 pb-6 pl-7 ${
-					formProgress < Progress.COMPLETED_DOCS ? "opacity-70" : ""
+					!isCompleted && !isCurrent ? "opacity-70" : ""
 				}`}
 			>
 				<div className="flex items-center space-x-3 text-text_gray">
 					{!tncCheck && (
 						<MdOutlineCheckBoxOutlineBlank
 							className="text-2xl hover:cursor-pointer"
-							onClick={() => setTncCheck(true)}
+							onClick={() => (!isPending ? setTncCheck(true) : "")}
 						/>
 					)}
 					{tncCheck && (
 						<MdOutlineCheckBox
 							className="text-2xl hover:cursor-pointer"
-							onClick={() => setTncCheck(false)}
+							onClick={() => (!isPending ? setTncCheck(false) : "")}
 						/>
 					)}
 					<div className="flex flex-col">

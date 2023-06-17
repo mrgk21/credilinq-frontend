@@ -2,19 +2,19 @@ import { TiTick } from "react-icons/ti";
 
 interface Props {
 	text: string;
-	isCompleted: boolean;
 	index: number;
-	currIndex: number;
+	isCompleted: boolean;
+	isCurrent: boolean;
 }
 
-const FormSubHeader = ({ text, isCompleted, index, currIndex }: Props) => {
+const FormSubHeader = ({ text, index, isCompleted, isCurrent }: Props) => {
 	return (
 		<div className="flex items-center space-x-3">
 			{isCompleted && <TiTick size={25} className="min-w-[25px] rounded-full bg-green-700" />}
 			{!isCompleted && (
 				<span
 					className={`min-w-[25px] rounded-full  text-center ${
-						index === currIndex ? "bg-red-700" : "bg-[#9e9e9e]"
+						isCurrent ? "bg-red-700" : "bg-[#9e9e9e]"
 					}`}
 				>
 					{index + 1}
