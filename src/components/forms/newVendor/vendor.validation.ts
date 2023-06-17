@@ -22,7 +22,7 @@ export const vendorSchema = yup.object().shape({
 		.min(3, "Company must be min 3 chars")
 		.max(50, "Company must be max 50 chars")
 		.required("Company Position is required"),
-	appl_email1: yup.string().email().defined().required("Email is required"),
+	appl_email: yup.string().email().defined().required("Email is required"),
 	appl_mobile: yup
 		.string()
 		.matches(/[0-9]/, "Mobile must only contain digits")

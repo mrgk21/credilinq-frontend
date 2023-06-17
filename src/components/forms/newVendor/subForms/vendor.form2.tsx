@@ -42,9 +42,9 @@ const VendorForm2 = ({ errors, formProgress, onChange }: Props) => {
 				/>
 				<div>
 					<InputField
-						error={errors.appl_email1 ?? null}
+						error={errors.appl_email ?? null}
 						label="Email Address"
-						name="appl_email1"
+						name="appl_email"
 						placeholder="Enter your email address"
 						onChange={onChange}
 						disabled={!isCompleted && !isCurrent}

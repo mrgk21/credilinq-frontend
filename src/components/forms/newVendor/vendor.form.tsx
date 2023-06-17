@@ -1,4 +1,6 @@
+import { useMutation } from "@apollo/client";
 import Button from "@src/components/common/button";
+import { CREATE_VENDOR } from "@src/gql/createVendor.mutation";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { ValidationError } from "yup";
@@ -13,7 +15,7 @@ interface CustomElements extends HTMLFormControlsCollection {
 	comp_name: HTMLInputElement;
 	appl_name: HTMLInputElement;
 	appl_pos: HTMLInputElement;
-	appl_email1: HTMLInputElement;
+	appl_email: HTMLInputElement;
 	appl_email2: HTMLInputElement;
 	appl_mobile: HTMLInputElement;
 }
@@ -39,6 +41,8 @@ const NewVendorForm = () => {
 	const [errors, setErrors] = useState<{ [k: string]: any }>({});
 	const [docs, setDocs] = useState<File[]>([]);
 
+	const [createVendor] = useMutation(CREATE_VENDOR);
+
 	useEffect(() => {
 		let progress: Progress = Progress.STARTED;
 
@@ -48,7 +52,7 @@ const NewVendorForm = () => {
 			if (
 				data.appl_name &&
 				data.appl_pos &&
-				data.appl_email1 &&
+				data.appl_email &&
 				data.appl_email2 &&
 				data.appl_mobile
 			) {
@@ -67,22 +71,28 @@ const NewVendorForm = () => {
 
 	const handleSubmit = async (e: React.FormEvent<RegisterForm>) => {
 		e.preventDefault();
-		const { comp_name, comp_uen, appl_email1, appl_mobile, appl_name, appl_pos } =
+		const { comp_name, comp_uen, appl_email, appl_mobile, appl_name, appl_pos } =
 			e.currentTarget.elements;
 
 		try {
-			const result = await vendorSchema.validate(
+			const { tnc, ...result } = await vendorSchema.validate(
 				{
 					comp_uen: comp_uen.value,
 					comp_name: comp_name.value,
 					appl_name: appl_name.value,
 					appl_pos: appl_pos.value,
-					appl_email1: appl_email1.value,
+					appl_email: appl_email.value,
 					appl_mobile: appl_mobile.value,
 					tnc: tncCheck,
 				},
 				{ abortEarly: false },
 			);
+			const resp = await createVendor({
+				variables: {
+					...result,
+				},
+			});
+			console.log({ resp });
 		} catch (error: unknown) {
 			const errs: typeof errors = {};
 
@@ -97,7 +107,7 @@ const NewVendorForm = () => {
 	const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		try {
 			if (e.target.name === "appl_email2") {
-				if (e.target.value === data.appl_email1) {
+				if (e.target.value === data.appl_email) {
 					setErrors({ ...errors, ...{ [e.target.name]: null } });
 					setData({ ...data, ...{ [e.target.name]: e.target.value } });
 					return;
