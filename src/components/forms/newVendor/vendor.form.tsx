@@ -65,14 +65,10 @@ const NewVendorForm = () => {
 		setFormProgress(progress);
 	}, [data, docs, tncCheck]);
 
-	console.log({ formProgress, data });
-
 	const handleSubmit = async (e: React.FormEvent<RegisterForm>) => {
 		e.preventDefault();
 		const { comp_name, comp_uen, appl_email1, appl_mobile, appl_name, appl_pos } =
 			e.currentTarget.elements;
-
-		console.log({ elements: e.currentTarget.elements });
 
 		try {
 			const result = await vendorSchema.validate(
@@ -87,8 +83,6 @@ const NewVendorForm = () => {
 				},
 				{ abortEarly: false },
 			);
-
-			console.log({ result });
 		} catch (error: unknown) {
 			const errs: typeof errors = {};
 
@@ -140,7 +134,6 @@ const NewVendorForm = () => {
 			_docs.push(file);
 			return _docs;
 		});
-		console.log("new file", _docs);
 	};
 
 	const handleDocRemove = (ind: number) => {
@@ -150,7 +143,6 @@ const NewVendorForm = () => {
 			return _docs;
 		});
 	};
-	console.log({ docs });
 
 	return (
 		<form

@@ -19,8 +19,6 @@ interface DropzoneProps {
 }
 
 const Dropzone = ({
-	label,
-	name,
 	fileTypes = { "*": [] },
 	onDrop,
 	maxFiles = 1,
